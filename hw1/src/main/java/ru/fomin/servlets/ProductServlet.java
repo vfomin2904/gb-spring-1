@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-@WebServlet(urlPatterns = "/products")
+@WebServlet(urlPatterns = "/products/*")
 public class ProductServlet extends HttpServlet {
 
     private ProductRepo repository;
@@ -25,13 +25,25 @@ public class ProductServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.getWriter().println("<table><thead><tr><td>Product</td><td>Price</td></tr></thead><tbody>");
-        Map<Long, Product> products = repository.getRepository();
-        for(Map.Entry<Long, Product> entry : products.entrySet()){
-            String line = String.format("<tr><td>%s</td><td>%s</td></tr>", entry.getValue().getName(), entry.getValue().getPrice());
-            resp.getWriter().println(line);
 
+        if(req.getPathInfo() == null){
+            resp.getWriter().println("<table><thead><tr><td>Product</td><td>Price</td></tr></thead><tbody>");
+            Map<Long, Product> products = repository.getRepository();
+            for(Map.Entry<Long, Product> entry : products.entrySet()){
+                Product product = entry.getValue();
+                String line = String.format("<tr><td><a href='%s/products/%s'>%s</a></td><td>%s</td></tr>",
+                        req.getContextPath(), product.getId(), product.getName(), product.getPrice());
+                resp.getWriter().println(line);
+
+            }
+            resp.getWriter().println("</tbody></table>");
+        } else{
+            Long id = Long.parseLong(req.getPathInfo().substring(1));
+            Product product = repository.getProductById(id);
+
+            resp.getWriter().println("Name: "+product.getName());
+            resp.getWriter().println("Price: "+product.getPrice());
         }
-        resp.getWriter().println("</tbody></table>");
+
     }
 }

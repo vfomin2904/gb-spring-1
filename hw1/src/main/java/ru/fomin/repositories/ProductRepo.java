@@ -25,4 +25,9 @@ public class ProductRepo {
     public Map<Long, Product> getRepository() {
         return repository;
     }
+
+
+    public Product getProductById(Long id){
+        return repository.get(id);
+    }
 }
