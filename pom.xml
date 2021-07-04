@@ -7,6 +7,10 @@
     <groupId>ru.fomin</groupId>
     <artifactId>gb-spring-1</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>hw5</module>
+        <module>hw6</module>
+    </modules>
     <packaging>pom</packaging>
 
     <properties>
