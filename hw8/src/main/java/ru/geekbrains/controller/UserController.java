@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -38,7 +39,8 @@ public class UserController {
                            @RequestParam("minAge") Optional<Integer> minAge,
                            @RequestParam("maxAge") Optional<Integer> maxAge,
                            @RequestParam("page") Optional<Integer> page,
-                           @RequestParam("size") Optional<Integer> size) {
+                           @RequestParam("size") Optional<Integer> size,
+                           @RequestParam("sortParam") Optional<String> sortParam) {
         logger.info("User list page requested");
 
 //        List<User> users = userRepository.filterUsers(
@@ -57,8 +59,9 @@ public class UserController {
             spec = spec.and(UserSpecifications.maxAge(maxAge.get()));
         }
 
+        Sort sort = Sort.by(sortParam.orElse("id"));
         model.addAttribute("users", userRepository.findAll(spec,
-                PageRequest.of(page.orElse(1) - 1, size.orElse(3))));
+                PageRequest.of(page.orElse(1) - 1, size.orElse(3), sort)));
         return "users";
     }
 
